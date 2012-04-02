@@ -1,4 +1,6 @@
 import os
+from MySQLdb import connect
+from MySQLdb import cursors
 
 from flask import Flask
 app = Flask(__name__)
@@ -9,9 +11,27 @@ def index():
 
 @app.route('/<name>')
 def hello(name):
-    return 'Hello, %s' % name
+    return 'param: %s' % name
+
+@app.route('/eventslist')
+def eventsList():
+    host = 'www.tigerapps.org'
+    connection = connect(host = host, port = 5000, user = 'rnarang', passwd = 'rishi', db = 'tigerapps')
+
+    # Create cursor as a dictionary:
+    cursor = connection.cursor(cursors.DictCursor)
+    cursor.execute("select * from pam_event")
+    row = cursor.fetchone()
+    table = ""
+    while row:
+        table = table + row[title] + ", "
+        row = cursor.fetchone()
+
+    return table
 
 if __name__ == '__main__':
+    app.debug = True
+    app.run()
     # Bind to PORT if defined, otherwise default to 5000.
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    #port = int(os.environ.get('PORT', 5000))
+    #app.run(host='0.0.0.0', port=port)

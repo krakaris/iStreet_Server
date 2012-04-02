@@ -1,3 +1,6 @@
 venv
 *.pyc
 *~
+nohup.out
+*mysql-5.5.22-osx10.6-x86_64*
+activate
