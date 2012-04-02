@@ -1,6 +1,6 @@
 import os
-from MySQLdb import connect
-from MySQLdb import cursors
+#from MySQLdb import connect
+#from MySQLdb import cursors
 
 from flask import Flask
 app = Flask(__name__)
