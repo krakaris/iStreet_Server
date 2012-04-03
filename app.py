@@ -16,11 +16,10 @@ def hello(name):
 @app.route('/eventslist')
 def eventsList():
     host = 'dev.tigerapps.org'
-    port = 5001
     user = 'rnarang'
     passwd = 'temporaryaccess'
     db = 'tigerapps'
-    connection = connect(host = host, port = port, user = user, passwd = passwd, db = db)
+    connection = connect(host = host, user = user, passwd = passwd, db = db)
 
     # Create cursor as a dictionary:
     cursor = connection.cursor(cursors.DictCursor)
@@ -28,7 +27,7 @@ def eventsList():
     row = cursor.fetchone()
     table = ""
     while row:
-        table = table + row[title] + ", "
+        table = table + row["title"] + ", "
         row = cursor.fetchone()
 
     return table
