@@ -15,7 +15,7 @@ def hello(name):
 
 @app.route('/eventslist')
 def eventsList():
-    host = 'www.tigerapps.org'
+    host = 'dev.tigerapps.org'
     port = 5001
     user = 'rnarang'
     passwd = 'temporaryaccess'
