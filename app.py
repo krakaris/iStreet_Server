@@ -1,3 +1,4 @@
+import os
 from MySQLdb import connect
 from MySQLdb import cursors
 
