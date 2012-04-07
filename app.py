@@ -13,7 +13,7 @@ def index():
 
 @app.route('/eventslist', methods = ['GET'])
 def eventsList():
-    return getJSONForQuery("select title, event_id, name from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) > '2012-03-01'")
+    return getJSONForQuery("select title, event_id, poster, name from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) > '2012-03-01'")
 
 @app.route('/eventinfo', methods = ['GET'])
 def eventInfo():
@@ -21,7 +21,7 @@ def eventInfo():
     if event_id == None:
         return "Invalid request: missing event_id argument"
 
-    return getJSONForQuery("select title, event_id, time_start, time_end, description, entry, entry_description, name from pam_event, pam_club where pam_event.club_id = pam_club.club_id and event_id = " + str(event_id))
+    return getJSONForQuery("select title, poster, event_id, time_start, time_end, description, entry, entry_description, name from pam_event, pam_club where pam_event.club_id = pam_club.club_id and event_id = " + str(event_id))
 
 @app.route('/clubevents', methods = ['GET'])
 def clubEvents():
@@ -30,7 +30,7 @@ def clubEvents():
         return "Invalid request: missing name argument"
 
     #cursor = sendQuery("select title, event_id, pam_event.club_id, pam_club.club_id, time_start, time_end, description, entry, entry_description, name from pam_event, pam_club where pam_event.club_id = pam_club.club_id and name = \"" + name + "\" and DATE(time_start) = '2012-03-10'")
-    return getJSONForQuery("select title, event_id, time_start, time_end, description, entry, entry_description, name from pam_event, pam_club where pam_event.club_id = pam_club.club_id and name = \"" + name + "\"")
+    return getJSONForQuery("select title, event_id, poster, time_start, time_end, description, entry, entry_description, name from pam_event, pam_club where pam_event.club_id = pam_club.club_id and name = \"" + name + "\"")
 
 def getJSONForQuery(query):
     cursor = sendQuery(query)
