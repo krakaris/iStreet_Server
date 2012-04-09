@@ -5,8 +5,7 @@ from MySQLdb import cursors
 import app
 
 def add(user_id, message):
-    app.sendQuery("INSERT INTO chatitems VALUES (null, null, '" + MySQLdb.escape_string(user_i\
-d) + "', '" + MySQLdb.escape_string(message) + "'", "istreet")
+    app.sendQuery("INSERT INTO chatitems VALUES (null, null, '" + MySQLdb.escape_string(user_id) + "', '" + MySQLdb.escape_string(message) + "'", "istreet")
 
 def get(past):
     if (past != ""):
