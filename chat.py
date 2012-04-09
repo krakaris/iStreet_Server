@@ -10,5 +10,5 @@ def add(user_id, message):
 def get(past):
     if (past != ""):
         return app.getJSONForQuery("SELECT * FROM chatitems WHERE id > " + MySQLdb.escape_string(past) + " ORDER BY added LIMIT 50", "istreet")
-     else:
+    else:
         return app.getJSONForQuery("SELECT * FROM chatitems ORDER BY added LIMIT 50", "istreet")
