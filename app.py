@@ -2,7 +2,8 @@ import os
 from MySQLdb import connect
 from MySQLdb import cursors
 
-import json, chat, sys, string
+import json
+import chat
 
 from flask import Flask, request
 app = Flask(__name__)
@@ -13,9 +14,8 @@ def index():
 
 @app.route('/eventslist', methods = ['GET'])
 def eventsList():
-    return getJSONForQuery("select title, event_id, poster, name, DATE(time_start) from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) = ‘2012-04-07’", "tigerapps")
-
-#    return getJSONForQuery("select title, event_id, poster, name, DATE(time_start) from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) and time_start >= CURDATE() ORDER BY time_start", "tigerapps")
+#    return getJSONForQuery("select title, event_id, poster, name, DATE(time_start) from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) = ‘2012-04-07’", "tigerapps")
+    return getJSONForQuery("select title, event_id, poster, name, DATE(time_start) from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) and time_start >= CURDATE() ORDER BY time_start", "tigerapps")
 
 @app.route('/eventinfo', methods = ['GET'])
 def eventInfo():
@@ -66,10 +66,12 @@ def test():
 
 @app.route('/add', methods = ['POST'])
 def add_message():
-    #TODO: WHAT IF THESE VALUES DON'T EXIST?
     user_id = request.form['user_id']
     message = request.form['message']
-    return chat.add_message(user_id, message)
+    print user_id
+    print message
+    print "hippo"
+    return add_message.add(user_id, message)
 
 @app.route('/get', methods = ['GET'])
 def get_messages():
@@ -77,13 +79,11 @@ def get_messages():
     if past == None:
         past = ""
 
-    return chat.get_messages(past)
+    return get_messages(past)
 
 if __name__ == '__main__':
-    if(len(sys.argv) > 1 and str.lower(sys.argv[1]) == "debug"):
-        app.debug = True
-        app.run()
-    else:
-        # Bind to PORT if defined, otherwise default to 5000.
-        port = int(os.environ.get('PORT', 5000))
-        app.run(host='0.0.0.0', port=port)
+    #app.debug = True
+    #app.run()
+    # Bind to PORT if defined, otherwise default to 5000.
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
