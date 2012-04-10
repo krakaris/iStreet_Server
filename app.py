@@ -5,12 +5,13 @@ from MySQLdb import cursors
 
 import json, chat, string, sys
 
-from flask import Flask, request
+from flask import Flask, request, render_template
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return 'Uses: /eventslist, /eventinfo, /clubevents'
+    return render_template('test.html')
+    #return 'Uses: /eventslist, /eventinfo, /clubevents'
 
 @app.route('/eventslist', methods = ['GET'])
 def eventsList():
