@@ -2,8 +2,7 @@ import os
 from MySQLdb import connect
 from MySQLdb import cursors
 
-import json
-import chat
+import json, chat, sys, string
 
 from flask import Flask, request
 app = Flask(__name__)
@@ -67,12 +66,10 @@ def test():
 
 @app.route('/add', methods = ['POST'])
 def add_message():
+    #TODO: WHAT IF THESE VALUES DON'T EXIST?
     user_id = request.form['user_id']
     message = request.form['message']
-    print user_id
-    print message
-    print "hippo"
-    return add_message.add(user_id, message)
+    return chat.add_message(user_id, message)
 
 @app.route('/get', methods = ['GET'])
 def get_messages():
@@ -80,11 +77,13 @@ def get_messages():
     if past == None:
         past = ""
 
-    return get_messages(past)
+    return chat.get_messages(past)
 
 if __name__ == '__main__':
-    #app.debug = True
-    #app.run()
-    # Bind to PORT if defined, otherwise default to 5000.
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    if(len(sys.argv) > 1 and str.lower(sys.argv[1]) == "debug"):
+        app.debug = True
+        app.run()
+    else:
+        # Bind to PORT if defined, otherwise default to 5000.
+        port = int(os.environ.get('PORT', 5000))
+        app.run(host='0.0.0.0', port=port)

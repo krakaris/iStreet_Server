@@ -1,14 +1,17 @@
 import os
-from MySQLdb import connect
-from MySQLdb import cursors
+from MySQLdb import connect, cursors, escape_string
 
 import app
 
-def add(user_id, message):
-    app.sendQuery("INSERT INTO chatitems VALUES (null, null, '" + MySQLdb.escape_string(user_id) + "', '" + MySQLdb.escape_string(message) + "'", "istreet")
+def add_message(user_id, message):
+    query = "INSERT INTO chatitems VALUES (null, null, \'" + escape_string(user_id) + "\', \'" + escape_string(message) + "\')"
+    app.sendQuery(query, "istreet")
+    return ""
 
-def get(past):
+
+'''returns JSON string with id, added (timestamp), user_id, and message'''
+def get_messages(past):
     if (past != ""):
-        return app.getJSONForQuery("SELECT * FROM chatitems WHERE id > " + MySQLdb.escape_string(past) + " ORDER BY added LIMIT 50", "istreet")
+        return app.getJSONForQuery("SELECT * FROM chatitems WHERE id > " + escape_string(past) + " ORDER BY added LIMIT 50", "istreet")
     else:
         return app.getJSONForQuery("SELECT * FROM chatitems ORDER BY added LIMIT 50", "istreet")
