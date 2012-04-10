@@ -1,3 +1,4 @@
+
 import os
 from MySQLdb import connect
 from MySQLdb import cursors
@@ -14,7 +15,7 @@ def index():
 
 @app.route('/eventslist', methods = ['GET'])
 def eventsList():
-#    return getJSONForQuery("select title, event_id, poster, name, DATE(time_start) from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) = ‘2012-04-07’", "tigerapps")
+    #return getJSONForQuery("select title, event_id, poster, name, DATE(time_start) from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) = '2012-04-07'", "tigerapps")
     return getJSONForQuery("select title, event_id, poster, name, DATE(time_start) from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) and time_start >= CURDATE() ORDER BY time_start", "tigerapps")
 
 @app.route('/eventinfo', methods = ['GET'])
