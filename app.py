@@ -2,8 +2,7 @@ import os
 from MySQLdb import connect
 from MySQLdb import cursors
 
-import json
-import chat
+import json, chat, sys, string
 
 from flask import Flask, request
 app = Flask(__name__)
@@ -79,8 +78,10 @@ def get_messages():
     return chat.get_messages(past)
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run()
-    # Bind to PORT if defined, otherwise default to 5000.
-    #port = int(os.environ.get('PORT', 5000))
-    #app.run(host='0.0.0.0', port=port)
+    if(len(sys.argv) > 1 and str.lower(sys.argv[1]) == "debug"):
+        app.debug = True
+        app.run()
+    else:
+        # Bind to PORT if defined, otherwise default to 5000.
+        port = int(os.environ.get('PORT', 5000))
+        app.run(host='0.0.0.0', port=port)
