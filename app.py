@@ -3,8 +3,7 @@ import os
 from MySQLdb import connect
 from MySQLdb import cursors
 
-import json
-import chat
+import json, chat, string, sys
 
 from flask import Flask, request
 app = Flask(__name__)
@@ -61,30 +60,28 @@ def getDictForQueryResults(cursor):
         row = cursor.fetchone()
     return results
 
-@app.route("/test")
-def test():
-    return add_message.test()
-
 @app.route('/add', methods = ['POST'])
 def add_message():
+
+    #TODO: what if the following two args dont exist?
     user_id = request.form['user_id']
     message = request.form['message']
     print user_id
     print message
-    print "hippo"
-    return add_message.add(user_id, message)
+    return chat.add(user_id, message)
 
 @app.route('/get', methods = ['GET'])
 def get_messages():
     past = request.args.get("past")
     if past == None:
         past = ""
-
-    return get_messages(past)
+    return chat.get(past)
 
 if __name__ == '__main__':
-    #app.debug = True
-    #app.run()
-    # Bind to PORT if defined, otherwise default to 5000.
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    if(len(sys.argv) > 1 and str.lower(sys.argv[1]) == "debug"):
+        app.debug = True
+        app.run()
+    else:
+        # Bind to PORT if defined, otherwise default to 5000.
+        port = int(os.environ.get('PORT', 5000))
+        app.run(host='0.0.0.0', port=port)
