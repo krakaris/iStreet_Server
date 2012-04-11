@@ -42,7 +42,7 @@ def getJSONForQuery(query, database):
     return str(json.dumps(table, encoding = "latin-1"))
 
 def sendQuery(query, database):
-    USE_PROD_SERVER = False
+    USE_PROD_SERVER = True
     host = ""
     user = ""
     passwd = ""
