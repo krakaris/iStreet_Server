@@ -40,10 +40,20 @@ def getJSONForQuery(query, database):
     return str(json.dumps(table, encoding = "latin-1"))
 
 def sendQuery(query, database):
-    host = 'www.tigerapps.org'
-    user = 'iossvr24093'
-    passwd = 'FpmMQe9MQRXgO63'
+    USE_PROD_SERVER = False
+    host = ""
+    user = ""
+    passwd = ""
     
+    if(USE_PROD_SERVER):
+        host = 'www.tigerapps.org'
+        user = 'iossvr24093'
+        passwd = 'FpmMQe9MQRXgO63'
+    else:
+        host = 'dev.tigerapps.org'
+        user = 'iossvrdev'
+        passwd = 'development'
+
     connection = connect(host = host, user = user, passwd = passwd, db = database)
     cursor = connection.cursor(cursors.DictCursor)
     cursor.execute(query)
