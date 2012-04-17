@@ -36,6 +36,10 @@ def clubEvents():
 
     #return getJSONForQuery("select title, event_id, poster, time_start, time_end, description, entry, entry_description, name from pam_event, pam_club where pam_event.club_id = pam_club.club_id and time_start <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) and time_start >= CURDATE() and name = \"" + name + "\" ORDER BY time_start", "tigerapps")
 
+@app.route('/clubslist', methods = ['GET'])
+def clubsList():
+    return getJSONForQuery("select club_id, name from pam_club", "tigerapps")
+
 def getJSONForQuery(query, database):
     cursor = sendQuery(query, database)
     table = getDictForQueryResults(cursor)
