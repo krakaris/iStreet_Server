@@ -96,6 +96,72 @@ def get_messages():
         past = ""
     return chat.get(past)
 
+@app.route('/updateUser', methods = ['POST'])
+def updateUser():
+    # GET
+    netid = request.args.get("netid") #mandatory
+    # POST
+    fbid = ""
+    if(request.form.has_key("fb_id")):
+           fbid = request.form["fb_id"]
+    name = ""
+    if(request.form.has_key("name")):
+       name = request.form["name"]
+    events = ""
+    if(request.form.has_key("events")):
+        events = request.form["events"]
+
+    query = ""
+    # send query to see if user with netid already exist
+    # if the user already exists, update that row with the new information)
+    # if not, create a new wrote with that information
+    return ""
+
+@app.route('/attendEvent', methods = ['POST'])
+def attendEvent():
+    # GET
+    netid = request.args.get("netid")
+    # POST
+    event_id = ""
+    if(request.form.has_key("event_id")):
+        event_id = request.form["event_id"]
+    
+    # send query to get row for user
+    # extract events list and append event to events list
+    # send query to update the row for that user with the new events list
+    return ""
+
+@app.route('/unattendEvent', methods = ['POST'])
+def unattendEvent():
+    # GET
+    netid = request.args.get("netid")
+    # POST
+    event_id = ""
+    if(request.form.has_key("event_id")):
+        event_id = request.form["event_id"]
+    
+    # send query to get row for user
+    # extract events list and remove event from events list
+    # send query to update the row for that user with the new events list
+    return ""
+
+@app.route('/getUsersForEvent', methods = ['GET'])
+def getUsersForEvent():
+    # GET
+    event_id = request.args.get("event_id")
+
+    # send query for list of fb_id's that are attending that event
+    # this one is probably the most complex; we'll have to see if there's some way of going through each user and seeing if their my_events contains that event. maybe we can do this one together.
+    return ""
+
+@app.route('/getEventsForUser', methods = ['GET'])
+def getEventsForUser():
+    # GET
+    fb_id = request.args.get("fb_id")
+
+    # send query for list of event_id's for that user
+    return ""
+
 if __name__ == '__main__':
     if(len(sys.argv) > 1 and str.lower(sys.argv[1]) == "debug"):
         app.debug = True
