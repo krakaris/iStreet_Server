@@ -27,7 +27,7 @@ class CASClient:
         return None
 
     def ServiceURL(self):
-        return "http://localhost:5000/login"
+        return "http://istreetsvr.herokuapp.com/login"
         
 def main():
     print "CASClient does not run standalone"
