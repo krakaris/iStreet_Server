@@ -1,5 +1,6 @@
 import sys, os, cgi, urllib, re
-from flask import Flask, request, render_template, make_response, redirect
+
+from flask import redirect
 
 class CASClient:
 
@@ -27,7 +28,10 @@ class CASClient:
         return None
 
     def ServiceURL(self):
-        return "http://istreetsvr.herokuapp.com/login"
+        if(len(sys.argv) > 1 and str.lower(sys.argv[1]) == "debug"):
+            return "http://localhost:5000/login"
+        else:
+            return "http://istreetsvr.herokuapp.com/login"
         
 def main():
     print "CASClient does not run standalone"
