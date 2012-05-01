@@ -3,10 +3,11 @@ from istreetserver import app
 import sys
 
 from flask import request, render_template, redirect, session
-from authentication import authenticate
+from authentication import authenticate, requires_CRauth
 from database import sendQuery
 
 @app.route('/updateUser', methods = ['POST'])
+@requires_CRauth
 def updateUser():
     netid = ""
     response = authenticate()
@@ -48,6 +49,7 @@ def updateUser():
     return "SUCCESS"
 
 @app.route('/attendEvent', methods = ['POST'])
+@requires_CRauth
 def attendEvent():
     netid = ""
     response = authenticate()
@@ -92,6 +94,7 @@ def attendEvent():
     return "SUCCESS"
 
 @app.route('/unattendEvent', methods = ['POST'])
+@requires_CRauth
 def unattendEvent():
     netid = ""
     response = authenticate()
@@ -137,6 +140,7 @@ def unattendEvent():
     return "SUCCESS"
 
 @app.route('/getUsersForEvent', methods = ['GET'])
+@requires_CRauth
 def getUsersForEvent():
     netid = ""
     response = authenticate()
@@ -163,6 +167,7 @@ def getUsersForEvent():
     return ", ".join(fb_ids)
 
 @app.route('/getEventsForUser', methods = ['GET'])
+@requires_CRauth
 def getEventsForUser():
     netid = ""
     response = authenticate()

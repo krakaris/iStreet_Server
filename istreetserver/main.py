@@ -1,9 +1,7 @@
 from istreetserver import app
 
-import sys
-
 from flask import request, render_template, redirect, session
-from authentication import authenticate
+from authentication import authenticate, requires_CASauth
 from database import getJSONForQuery, sendQuery
 
 @app.route('/')
@@ -14,11 +12,12 @@ def index():
     return render_template('test.html', netid=netid)
 
 @app.route('/eventslist', methods = ['GET'])
-def eventsList():
-    response = authenticate()
-    if(type(response) != str):
-        return response #redirect
-
+@requires_CASauth
+def eventsList(netid):
+    #response = authenticate()
+    #if(type(response) != str):
+    #    return response #redirect
+    print netid
     return getJSONForQuery("select title, event_id, poster, name, time_start, time_end, description, entry, entry_description from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) > '2012-03-30'", "tigerapps")
 #    return getJSONForQuery("select title, event_id, poster, name, time_start from pam_event, pam_club WHERE pam_club.club_id = pam_event.club_id AND DATE(time_start) <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) and time_start >= CURDATE() ORDER BY time_start", "tigerapps")
 
@@ -48,6 +47,7 @@ def clubEvents():
 
 @app.route('/clubslist', methods = ['GET'])
 def clubsList():
+    print "clubs list coming!..."
     response = authenticate()
     if(type(response) != str):
         return response #redirect
