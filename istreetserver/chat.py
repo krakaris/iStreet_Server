@@ -1,18 +1,13 @@
 from istreetserver import app
 
 from MySQLdb import escape_string
-from authentication import authenticate
+from authentication import requires_CASauth
 from flask import request
 from database import sendQuery, getJSONForQuery
 
 @app.route('/add', methods = ['POST'])
-def add_message():
-    netid = ""
-    response = authenticate()
-    if(type(response) != str):
-        return response #redirect
-    else:
-        netid = response
+@requires_CASauth
+def add_message(netid):
     
     #TODO: default to netid, use user_id if there is one.
     user_id = request.form['user_id']
@@ -27,10 +22,8 @@ def add_message():
     return ""
 
 @app.route('/get', methods = ['GET'])
-def get_messages():
-    response = authenticate()
-    if(type(response) != str):
-        return response #redirect
+@requires_CASauth
+def get_messages(netid):
    
     past = request.args.get("past")
 

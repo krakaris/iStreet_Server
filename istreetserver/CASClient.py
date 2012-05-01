@@ -1,4 +1,4 @@
-import sys, os, cgi, urllib, re
+import sys, urllib, re
 
 from flask import redirect
 

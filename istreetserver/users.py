@@ -2,20 +2,15 @@ from istreetserver import app
 
 import sys
 
-from flask import request, render_template, redirect, session
-from authentication import authenticate, requires_CRauth
+from flask import request
+from authentication import requires_CRauth, requires_CASauth
 from database import sendQuery
 
 @app.route('/updateUser', methods = ['POST'])
+@requires_CASauth
 @requires_CRauth
-def updateUser():
-    netid = ""
-    response = authenticate()
-    if(type(response) != str):
-        return response #redirect
-    else:
-        netid = response
-        
+def updateUser(netid):
+  
     # GET
     fb_id = request.args.get("fb_id") #mandatory
     if fb_id == None:
@@ -49,15 +44,10 @@ def updateUser():
     return "SUCCESS"
 
 @app.route('/attendEvent', methods = ['POST'])
+@requires_CASauth
 @requires_CRauth
-def attendEvent():
-    netid = ""
-    response = authenticate()
-    if(type(response) != str):
-        return response #redirect
-    else:
-        netid = response
-        
+def attendEvent(netid):
+
     # GET
     fb_id = request.args.get("fb_id")
     if fb_id == None:
@@ -94,15 +84,9 @@ def attendEvent():
     return "SUCCESS"
 
 @app.route('/unattendEvent', methods = ['POST'])
+@requires_CASauth
 @requires_CRauth
-def unattendEvent():
-    netid = ""
-    response = authenticate()
-    if(type(response) != str):
-        return response #redirect
-    else:
-        netid = response
-        
+def unattendEvent(netid):
     # GET
     fb_id = request.args.get("fb_id")
     if fb_id == None:
@@ -140,15 +124,10 @@ def unattendEvent():
     return "SUCCESS"
 
 @app.route('/getUsersForEvent', methods = ['GET'])
+@requires_CASauth
 @requires_CRauth
-def getUsersForEvent():
-    netid = ""
-    response = authenticate()
-    if(type(response) != str):
-        return response #redirect
-    else:
-        netid = response
-        
+def getUsersForEvent(netid):
+    
     # GET
     event_id = request.args.get("event_id")
     if event_id == None:
@@ -167,14 +146,9 @@ def getUsersForEvent():
     return ", ".join(fb_ids)
 
 @app.route('/getEventsForUser', methods = ['GET'])
+@requires_CASauth
 @requires_CRauth
-def getEventsForUser():
-    netid = ""
-    response = authenticate()
-    if(type(response) != str):
-        return response #redirect
-    else:
-        netid = response
+def getEventsForUser(netid):
         
     # GET
     fb_id = request.args.get("fb_id")
