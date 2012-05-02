@@ -21,7 +21,7 @@ def eventsList(netid):
 
 @app.route('/eventinfo', methods = ['GET'])
 @requires_CASauth
-def eventInfo():
+def eventInfo(netid):
     event_id = request.args.get("event_id")
     if event_id == None:
         return "Invalid request: missing event_id argument"
