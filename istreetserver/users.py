@@ -20,9 +20,6 @@ def updateUser(netid):
     name = ""
     if(request.form.has_key("name")):
         name = request.form["name"]
-    events = ""
-    if(request.form.has_key("events")):
-        events = request.form["events"]
         
     userCursor = sendQuery("SELECT * FROM user WHERE fb_id = \'" + fb_id + "\'", "istreet")
     theUser = userCursor.fetchone()
@@ -35,11 +32,9 @@ def updateUser(netid):
         # set once for each of the three, if not ""
         if name != "":
             sendQuery("UPDATE user SET name = \'" + name + "\' WHERE fb_id = \'" + fb_id + "\'", "istreet")
-        if events != "":
-            sendQuery("UPDATE user SET events = \'" + events + "\' WHERE fb_id = \'" + fb_id + "\'", "istreet")
     else:
         # insert a new row with name, events, fbid, eventslist
-        sendQuery(str.format("INSERT INTO user (name, events, fb_id) VALUES(\'{0}\', \'{1}\', \'{2}\')", name, events, fb_id), "istreet")
+        sendQuery(str.format("INSERT INTO user (name, fb_id) VALUES(\'{0}\', \'{1}\')", name, fb_id), "istreet")
 
     return "SUCCESS"
 
@@ -72,9 +67,14 @@ def attendEvent(netid):
         return "ERROR: inconsistent server state - see error logs"    
     
     userEvents = theUser["events"]
-    eventsArray = userEvents.split(", ")
+    if not userEvents or userEvents == "":
+        eventsArray = []
+    else:
+        eventsArray = userEvents.split(", ")
+    
     if not (event_id in eventsArray):
         eventsArray.append(event_id)
+    
     newUserEvents = ", ".join(eventsArray)
     sendQuery(str.format("UPDATE user SET events = \'{0}\' WHERE fb_id = \'{1}\'", newUserEvents, fb_id), "istreet") 
 
