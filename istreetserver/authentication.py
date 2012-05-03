@@ -9,7 +9,6 @@ import string, random
 def requires_CASauth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        print "checking authorization from decorated"
         netid = ""
         response = authenticate()
         if(type(response) != str):
@@ -17,7 +16,7 @@ def requires_CASauth(f):
         else:
             netid = response
             args = (netid, )
-            return f(*args, **kwargs) # netid = netid)
+            return f(*args, **kwargs)
     return decorated
 
 # returns netid or redirect object
@@ -75,7 +74,6 @@ def CR_authentication():
 def requires_CRauth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        print "checking authorization from decorated"
         auth = request.authorization
         if not auth or not check_auth(auth.username, auth.password):
             return CR_authentication()
