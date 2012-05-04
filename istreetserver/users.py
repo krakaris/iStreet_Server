@@ -67,7 +67,6 @@ def attendEvent(netid):
     Creates the user if the user has not yet been created in the database.
     Returns an error message if the event_id parameter is missing, returns "SUCCESS" otherwise.
     """
-
     event_id = ""
     if(request.form.has_key("event_id")):
         event_id = request.form["event_id"]

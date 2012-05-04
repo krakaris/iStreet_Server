@@ -1,6 +1,7 @@
 from istreetserver import app
 
 from flask import request, session, Response
+from database import sendQuery
 import CASClient
 
 from functools import wraps
@@ -46,12 +47,27 @@ def CASLogin():
 @app.route('/login', methods = ['GET'])
 @requires_CASauth
 def login(netid):
+    ''''''
+    '''cursor = sendQuery("SELECT * FROM user WHERE netid = \'" + netid + "\'", "istreet")
+    theUser = cursor.fetchone()
+    if theUser == None:
+        sendQuery(str.format("INSERT INTO user (netid, name, fb_id, events, loggedin) VALUES(\'{0}\', \'\', \'\', \'\', 1)", netid), "istreet")
+    else:
+        if theUser["loggedin"] != 0:
+            session.pop('username', None)
+            return "ERROR: user logged in on another device."
+        else:
+            sendQuery("UPDATE user SET loggedin = 1 WHERE netid = \'" + netid + "\'", "istreet")
+    '''
+    
     return "SUCCESS: " + netid
 
 @app.route('/logout', methods = ['GET'])
 def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
+    #if netid != None:
+    #    sendQuery("UPDATE user SET loggedin = 0 WHERE netid = \'" + netid + "\'", "istreet")
     return "SUCCESS"
 
 import hashlib

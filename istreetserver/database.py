@@ -1,7 +1,6 @@
 import json
 
-from MySQLdb import connect
-from MySQLdb import cursors
+from MySQLdb import connect, cursors
 
 def getJSONForQuery(query, database):
     cursor = sendQuery(query, database)
