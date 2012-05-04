@@ -187,3 +187,28 @@ def getEventsForUser(netid):
         return "Error: user does not exist"
     
     return theUser["events"]
+
+@app.route('/checkUser', methods = ['GET'])
+@requires_CASauth
+@requires_CRauth
+def checkUser(netid):
+    """
+    Check if the user defined by fb_id exists.
+    
+    Parameters:
+    fb_id: HTTP GET (mandatory) (ex. fb_id=88888888)
+    
+    Returns "Yes" or "No", or an error message if the fb_id parameter is missing.
+    """
+    if not request.args.has_key("fb_id"):
+        return "ERROR: missing fb_id parameter (HTTP GET)"
+    
+    fb_id = request.args.get("fb_id")
+    userCursor = sendQuery("SELECT * FROM user WHERE fb_id = \'" + fb_id + "\'", "istreet")
+    theUser = userCursor.fetchone()
+    
+    if theUser == None:
+        return "No"
+    else:
+        return "Yes"
+
