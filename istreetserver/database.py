@@ -2,12 +2,12 @@ import json
 
 from MySQLdb import connect, cursors
 
-def getJSONForQuery(query, database):
-    cursor = sendQuery(query, database)
+def getJSONForQuery(query, database, params = ()):
+    cursor = sendQuery(query, database, params = params)
     table = getDictArrayForQueryResults(cursor)
     return str(json.dumps(table, encoding = "latin-1"))
 
-def sendQuery(query, database):
+def sendQuery(query, database, params = ()):
     USE_PROD_SERVER = True
     host = ""
     user = ""
@@ -24,7 +24,7 @@ def sendQuery(query, database):
 
     connection = connect(host = host, user = user, passwd = passwd, db = database)
     cursor = connection.cursor(cursors.DictCursor)
-    cursor.execute(query)
+    cursor.execute(query, params)
     
     return cursor
 

@@ -4,6 +4,7 @@ from flask import request
 from authentication import requires_CRauth, requires_CASauth
 from database import sendQuery
 
+import json
 
 
 @app.route('/updateUser', methods = ['POST'])
@@ -28,7 +29,10 @@ def updateUser(netid):
         fb_id = request.form.get("fb_id")
         if(len(fb_id) > 0):
             # see if there are any other netids associated with that fb_id
-            fbUsers = sendQuery("SELECT * FROM user WHERE fb_id = \'" + fb_id + "\' AND netid != \'" + netid + "\'", "istreet")
+            query = "SELECT * FROM user WHERE fb_id = %s AND netid != %s"
+            database = "istreet"
+            params = (fb_id, netid)
+            fbUsers = sendQuery(query, database, params = params)
             if(fbUsers.fetchone()):
                 return "Error: user with given fb_id already exists"
     
@@ -36,20 +40,31 @@ def updateUser(netid):
     if(request.form.has_key("name")):
         name = request.form["name"]
     
-    userCursor = sendQuery("SELECT * FROM user WHERE netid = \'" + netid + "\'", "istreet")
+    query = "SELECT * FROM user WHERE netid = %s"
+    database = "istreet"
+    params = (netid, )
+    userCursor = sendQuery(query, database, params = params)
     theUser = userCursor.fetchone()
     
     if theUser:
         if fb_id != None:
-            sendQuery("UPDATE user SET fb_id = \'" + fb_id + "\' WHERE netid = \'" + netid + "\'", "istreet")
+            query = "UPDATE user SET fb_id = %s WHERE netid = %s"
+            params = (fb_id, netid)
+            sendQuery(query, database, params = params)
+            
         if name != None:
-            sendQuery("UPDATE user SET name = \'" + name + "\' WHERE netid = \'" + netid + "\'", "istreet")
+            query = "UPDATE user SET name = %s WHERE netid = %s"
+            params = (name, netid)
+            sendQuery(query, database, params = params)
     else:
         if fb_id == None:
             fb_id = ""
         if name == None:
             name = ""
-        sendQuery(str.format("INSERT INTO user (netid, name, fb_id, events) VALUES(\'{0}\', \'{1}\', \'{2}\', \'\')", netid, name, fb_id), "istreet")
+        
+        query = "INSERT INTO user (netid, name, fb_id, events) VALUES(%s, %s, %s, %s)"
+        params = (netid, name, fb_id, "")
+        sendQuery(query, database, params = params)
 
     return "SUCCESS"
 
@@ -74,12 +89,17 @@ def attendEvent(netid):
     else:
         return "ERROR: missing event_id parameter (HTTP POST)"
         
-    userCursor = sendQuery("SELECT * FROM user WHERE netid = \'" + netid + "\'", "istreet")
+    query = "SELECT * FROM user WHERE netid = %s"
+    database = "istreet"
+    params = (netid, )
+    userCursor = sendQuery(query, database, params = params)
     theUser = userCursor.fetchone()
     
     userEvents = ""
     if theUser == None:
-        sendQuery(str.format("INSERT INTO user (netid, name, fb_id, events) VALUES(\'{0}\', \'\', \'\', \'\')", netid), "istreet")
+        query = "INSERT INTO user (netid, name, fb_id, events) VALUES(%s, %s, %s, %s)"
+        params = (netid, "", "", "")
+        sendQuery(query, database, params = params)
     else:
         userEvents = theUser["events"]
     
@@ -92,7 +112,9 @@ def attendEvent(netid):
         eventsArray.append(event_id)
     
     newUserEvents = ", ".join(eventsArray)
-    sendQuery(str.format("UPDATE user SET events = \'{0}\' WHERE netid = \'{1}\'", newUserEvents, netid), "istreet") 
+    query = "UPDATE user SET events = %s WHERE netid = %s"
+    params = (newUserEvents, netid)
+    sendQuery(query, database, params = params) 
 
     return "SUCCESS"
 
@@ -118,7 +140,10 @@ def unattendEvent(netid):
     else:
         return "ERROR: missing event_id parameter (HTTP POST)"
         
-    userCursor = sendQuery("SELECT * FROM user WHERE netid = \'" + netid + "\'", "istreet")
+    query = "SELECT * FROM user WHERE netid = %s"
+    database = "istreet"
+    params = (netid, )
+    userCursor = sendQuery(query, database, params = params)    
     theUser = userCursor.fetchone()
     
     if theUser == None:
@@ -130,7 +155,9 @@ def unattendEvent(netid):
         eventsArray.remove(event_id)
     
     newUserEvents = ", ".join(eventsArray)
-    sendQuery(str.format("UPDATE user SET events = \'{0}\' WHERE netid = \'{1}\'", newUserEvents, netid), "istreet") 
+    query = "UPDATE user SET events = %s WHERE netid = %s"
+    params = (newUserEvents, netid)
+    sendQuery(query, database, params = params) 
 
     return "SUCCESS"
 
@@ -151,7 +178,10 @@ def getUsersForEvent(netid):
     if event_id == None:
         return "ERROR: missing event_id parameter (HTTP GET)"
     
-    cursor = sendQuery(str.format("SELECT fb_id FROM user WHERE (events REGEXP \'^{0}, \' or events REGEXP \', {0}, \' or events REGEXP \', {0}$\') AND (fb_id IS NOT NULL AND fb_id != \'\')", event_id), "istreet")
+    query = "SELECT fb_id FROM user WHERE (events REGEXP %s or events REGEXP %s or events REGEXP %s) AND (fb_id IS NOT NULL AND fb_id != %s)"
+    database = "istreet"
+    params = (str.format("^{0}, ", event_id), str.format(", {0}, ", event_id), str.format(", {0}$", event_id), "")
+    cursor = sendQuery(query, database, params = params)    
     
     row = cursor.fetchone()
     fb_ids = []
@@ -175,18 +205,35 @@ def getEventsForUser(netid):
     Returns the list of events that the user is attending, or an error message if the user doesn't exist.
     """
 
+    database = "istreet"
     if not request.args.has_key("fb_id"):
-        userCursor = sendQuery("SELECT * FROM user WHERE netid = \'" + netid + "\'", "istreet")
+        query = "SELECT * FROM user WHERE netid = %s"
+        params = (netid, )
+        userCursor = sendQuery(query, database, params = params)
     else:
         fb_id = request.args.get("fb_id")
-        userCursor = sendQuery("SELECT * FROM user WHERE fb_id = \'" + fb_id + "\'", "istreet")
+        query = "SELECT * FROM user WHERE fb_id = %s"
+        params = (fb_id, )
+        userCursor = sendQuery(query, database, params = params)
     
     theUser = userCursor.fetchone()
     
     if theUser == None:
         return "Error: user does not exist"
     
-    return theUser["events"]
+    userEvents = theUser["events"]
+    
+    if userEvents == None or userEvents == "":
+        eventsArray = []
+    else:
+        eventsArray = userEvents.split(", ")
+        
+    for i in range(len(eventsArray)):
+        eventsArray[i] = {"event_id" : eventsArray[i]}
+    
+    return str(json.dumps(eventsArray, encoding = "latin-1"))
+    
+    
 
 @app.route('/checkUser', methods = ['GET'])
 @requires_CASauth
@@ -204,7 +251,10 @@ def checkUser(netid):
         return "ERROR: missing fb_id parameter (HTTP GET)"
     
     fb_id = request.args.get("fb_id")
-    userCursor = sendQuery("SELECT * FROM user WHERE fb_id = \'" + fb_id + "\'", "istreet")
+    query = "SELECT * FROM user WHERE fb_id = %s"
+    database = "istreet"
+    params = (fb_id, )
+    userCursor = sendQuery(query, database, params = params)
     theUser = userCursor.fetchone()
     
     if theUser == None:
