@@ -1,18 +1,19 @@
 from istreetserver import app
 
 from MySQLdb import escape_string
-from authentication import requires_CASauth
+from authentication import requires_CASauth, requires_CRauth
 from flask import request
 from database import sendQuery, getJSONForQuery
 
 @app.route('/add', methods = ['POST'])
 @requires_CASauth
+@requires_CRauth
 def add_message(netid):
     if not request.form.has_key("message"):
         return ""
     
     message = request.form['message']
-   
+
     query = "INSERT INTO chatitems VALUES (null, null, %s, %s)"
     database = "istreet"
     params = (netid, message)

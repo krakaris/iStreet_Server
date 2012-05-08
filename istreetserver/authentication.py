@@ -76,6 +76,11 @@ def check_auth(username, password):
     PRIVATE_KEY = "q{4fI&druS9Rz:)!o@0i"
     challenge = session['challenge'];
     expected_response = hashlib.md5(challenge + PRIVATE_KEY).hexdigest()
+    success = (password == expected_response)
+    if not success:
+        print "UH OH!"
+    else:
+        print "success!"
     return password == expected_response
 
 def CR_authentication():
