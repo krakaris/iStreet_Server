@@ -262,3 +262,28 @@ def checkUser(netid):
     else:
         return "Yes"
 
+@app.route('/getUsers', methods = ['GET'])
+@requires_CASauth
+@requires_CRauth
+def getUsers(netid):
+    """
+    Return a list of all fb_id's in the database.
+    
+    Parameters:
+    (None)
+    
+    Returns a comma-separated list of fb_id users using the app.
+    """
+    
+    query = "SELECT fb_id FROM user WHERE (fb_id IS NOT NULL AND fb_id != %s)"
+    database = "istreet"
+    params = ("", )
+    cursor = sendQuery(query, database, params = params)
+    
+    row = cursor.fetchone()
+    fb_ids = []
+    while row:
+        fb_ids.append(row["fb_id"])
+        row = cursor.fetchone()
+    
+    return ", ".join(fb_ids)
