@@ -178,9 +178,9 @@ def getUsersForEvent(netid):
     if event_id == None:
         return "ERROR: missing event_id parameter (HTTP GET)"
     
-    query = "SELECT fb_id FROM user WHERE (events REGEXP %s or events REGEXP %s or events REGEXP %s) AND (fb_id IS NOT NULL AND fb_id != %s)"
+    query = "SELECT fb_id FROM user WHERE (events REGEXP %s or events REGEXP %s or events REGEXP %s or events REGEXP %s) AND (fb_id IS NOT NULL AND fb_id != %s)"
     database = "istreet"
-    params = (str.format("^{0}, ", event_id), str.format(", {0}, ", event_id), str.format(", {0}$", event_id), "")
+    params = (str.format("^{0}, ", event_id), str.format(", {0}, ", event_id), str.format(", {0}$", event_id), str.format("^{0}$", event_id), "")
     cursor = sendQuery(query, database, params = params)    
     
     row = cursor.fetchone()
