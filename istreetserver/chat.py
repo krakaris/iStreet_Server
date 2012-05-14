@@ -9,6 +9,9 @@ from database import sendQuery, getJSONForQuery
 @requires_CASauth
 @requires_CRauth
 def add_message(netid):
+    '''
+    Adds a message to the chat system by adding it to the database. Returns an empty string.
+    '''
     if not request.form.has_key("message"):
         return ""
     
@@ -24,6 +27,9 @@ def add_message(netid):
 @app.route('/get', methods = ['GET'])
 @requires_CASauth
 def get_messages(netid):
+    '''
+    Returns the most recent 50 messages in the chat database in JSON.
+    '''
    
     past = request.args.get("past")
 

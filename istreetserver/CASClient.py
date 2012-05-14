@@ -1,3 +1,7 @@
+'''
+A large part of this code is supplied by CAS.
+'''
+
 import sys, urllib, re
 
 from flask import redirect
@@ -8,6 +12,9 @@ class CASClient:
         self.cas_url = url
 
     def Authenticate(self, ticket):
+        '''
+        Return the netid if the ticket is valid, otherwise return a CAS redirect
+        '''
         # If the request contains a login ticket, try to validate it
         if ticket != "":
             netid = self.Validate(ticket)
@@ -19,6 +26,9 @@ class CASClient:
         return response
 
     def Validate(self, ticket):
+        '''
+        Return the netid if the ticket is valid, otherwise return None
+        '''
         val_url = self.cas_url + "validate" + \
             '?service=' + urllib.quote(self.ServiceURL()) + \
             '&ticket=' + urllib.quote(ticket)
@@ -28,6 +38,9 @@ class CASClient:
         return None
 
     def ServiceURL(self):
+        '''
+        Get the URL for login-redirects (CAS authorization will redirect to this URL when it has finished)
+        '''
         if(len(sys.argv) > 1 and str.lower(sys.argv[1]) == "debug"):
             return "http://localhost:5000/login"
         else:

@@ -1,0 +1,19 @@
+<html>
+<head>
+    <title> iStreet for iOS</title>
+</head>
+<body>
+
+Try some of these URLs! You may want to log out of CAS first to make this more interesting.
+/eventslist - this will give you JSON for all the events, but you have to be logged in first! If you aren't, it will redirect you to CAS.
+/getUsers - no matter what, you won't get this to work! (well, unless you look at our code and find our challenge-response authentication key, but don't do that...)
+
+
+<br><br>
+{% if not netid %}
+<p><i>Not signed in</i></p>
+<a href="/login">Sign in </a>
+{% endif %}
+{% if netid %}<p><i>Signed in as {{netid}}</i></p>{% endif %}
+</body>
+</html>

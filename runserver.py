@@ -3,6 +3,9 @@ import sys, os
 from istreetserver import app
 
 if __name__ == '__main__':
+    '''
+    Run the server.
+    '''
     if(len(sys.argv) > 1 and str.lower(sys.argv[1]) == "debug"):
         app.debug = True
         app.run()
